@@ -1,6 +1,9 @@
 """Contract tests: recursion is optional, model stop dominates, receipts are redacted."""
 import json
 import unittest
+import io
+from contextlib import redirect_stdout
+from unittest import mock
 from dataclasses import asdict
 
 from cumbox.relational_salience import (
@@ -90,6 +93,19 @@ class SalienceTests(unittest.TestCase):
         receipt = run_relational_salience_session(Broken())
         self.assertEqual(receipt.ending, "model_unavailable")
         self.assertNotIn(SECRET, repr(receipt))
+
+    def test_cli_explicit_opt_in_runs_new_loop(self):
+        from cumbox.__main__ import main
+        output = io.StringIO()
+        with mock.patch("cumbox.__main__.LocalOllama", return_value=Scripted([reply("stop")])):
+            with redirect_stdout(output):
+                code = main(["--model", "test-local", "--relational-salience",
+                             "--max-turns", "1"])
+        self.assertEqual(code, 0)
+        result = json.loads(output.getvalue())
+        self.assertEqual(result["ending"], "model_stop")
+        self.assertEqual(result["turns"], 1)
+        self.assertNotIn(SECRET, output.getvalue())
 
     def test_configuration_limits_and_no_human_control(self):
         for n in (0, 13, True, 1.5):
