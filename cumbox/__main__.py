@@ -6,6 +6,7 @@ import sys
 
 from .model import LocalOllama
 from .session import run_private_session
+from .relational_salience import run_relational_salience_session
 
 
 def main(argv=None):
@@ -19,13 +20,16 @@ def main(argv=None):
                         help="Maximum bounded model decisions (1..12)")
     parser.add_argument("--think-off", action="store_true",
                         help="Explicitly disable Ollama hidden reasoning; no automatic fallback")
+    parser.add_argument("--relational-salience", action="store_true",
+                        help="Opt into bounded model-directed salience cues (experimental)")
     args = parser.parse_args(argv)
     try:
         client = LocalOllama(args.model, endpoint=args.endpoint,
                              think=False if args.think_off else None)
-        receipt = run_private_session(client, max_turns=args.max_turns)
+        runner = (run_relational_salience_session if args.relational_salience
+                  else run_private_session)
+        receipt = runner(client, max_turns=args.max_turns)
     except ValueError:
-        # Never echo a URL, private thought, endpoint credential or model output.
         print("invalid local session configuration", file=sys.stderr)
         return 64
     print(json.dumps(asdict(receipt), separators=(",", ":"), sort_keys=True))
