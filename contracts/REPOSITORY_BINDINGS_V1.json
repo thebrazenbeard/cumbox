@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-11-18",
+  "allow_human_entry": false,
+  "allow_private_content_export": false,
+  "dependencies": [
+    {
+      "repo": "thebrazenbeard/sexuality",
+      "sha": "c7c0095dc81fca4fe61732f99e829eb62f4d429e",
+      "state": "research_contract_only",
+      "active_by_default": false,
+      "role": "public model-neutral evaluation contract; not executable adapter",
+      "claims": []
+    },
+    {
+      "repo": "thebrazenbeard/pleasure",
+      "sha": "db3d05da63b18193633a607b870e9942700602ff",
+      "state": "optional_t0_diagnostic_only",
+      "active_by_default": false,
+      "role": "model-agnostic bounded source-only pleasure simulator",
+      "claims": [
+        "synthetic_T0_only"
+      ]
+    },
+    {
+      "repo": "thebrazenbeard/meso-crct",
+      "sha": "349ec4719af92f220877972a54a53f67cd3bc322",
+      "state": "optional_synthetic_diagnostic_only",
+      "active_by_default": false,
+      "role": "typed reward/drive/learning and adversarial source code; no runtime authority",
+      "claims": [
+        "nonexecutable_reference_intents"
+      ]
+    }
+  ],
+  "aliases": {
+    "thebrazenbeard/orgasm": "thebrazenbeard/pleasure"
+  }
+}
